@@ -6,8 +6,14 @@ import 'providers/member_provider.dart';
 import 'providers/transaction_provider.dart';
 import 'providers/statistics_provider.dart';
 import 'screens/home_screen.dart';
+import 'services/notification_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize notification service
+  await NotificationService.instance.initialize();
+
   runApp(const MyApp());
 }
 

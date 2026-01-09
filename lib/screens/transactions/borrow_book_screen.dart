@@ -6,6 +6,8 @@ import '../../providers/book_provider.dart';
 import '../../providers/member_provider.dart';
 import '../../models/book.dart';
 import '../../models/member.dart';
+import '../../services/qr_scanner_service.dart';
+import '../../services/notification_service.dart';
 
 class BorrowBookScreen extends StatefulWidget {
   const BorrowBookScreen({super.key});
@@ -55,13 +57,26 @@ class _BorrowBookScreenState extends State<BorrowBookScreen> {
     }
 
     try {
-      await context.read<TransactionProvider>().borrowBook(
+      final transaction = await context.read<TransactionProvider>().borrowBook(
         bookId: _selectedBook!.id!,
         memberId: _selectedMember!.id!,
         borrowDays: _borrowDays,
         notes: _notesController.text.trim().isEmpty
             ? null
             : _notesController.text.trim(),
+      );
+
+      // Send notifications
+      final dueDate = DateTime.now().add(Duration(days: _borrowDays));
+      await NotificationService.instance.showBorrowSuccessNotification(
+        _selectedBook!.title,
+        _selectedMember!.name,
+        dueDate,
+      );
+      await NotificationService.instance.scheduleReturnReminder(
+        transaction,
+        _selectedBook!.title,
+        _selectedMember!.name,
       );
 
       // Reload books to update stock
@@ -75,6 +90,34 @@ class _BorrowBookScreenState extends State<BorrowBookScreen> {
       }
     } catch (e) {
       if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+      }
+    }
+  }
+
+  Future<void> _scanBookQR() async {
+    final scannedCode = await QRScannerService.scanQRCode(context);
+
+    if (scannedCode != null && mounted) {
+      // Try to find book by ID
+      final bookProvider = context.read<BookProvider>();
+      try {
+        final bookId = int.parse(scannedCode);
+        final book = bookProvider.books.firstWhere(
+          (b) => b.id == bookId,
+          orElse: () => throw Exception('Buku tidak ditemukan'),
+        );
+
+        setState(() {
+          _selectedBook = book;
+        });
+
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Buku "${book.title}" dipilih')));
+      } catch (e) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('Error: $e')));
@@ -99,7 +142,23 @@ class _BorrowBookScreenState extends State<BorrowBookScreen> {
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            _buildBookSelector(),
+            Row(
+              children: [
+                Expanded(child: _buildBookSelector()),
+                const SizedBox(width: 8),
+                ElevatedButton.icon(
+                  onPressed: _scanBookQR,
+                  icon: const Icon(Icons.qr_code_scanner),
+                  label: const Text('Scan'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 16,
+                    ),
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 24),
             const Text(
               'Pilih Anggota',

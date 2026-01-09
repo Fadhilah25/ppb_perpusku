@@ -70,15 +70,15 @@ class _BookListScreenState extends State<BookListScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const AddEditBookScreen()),
           );
         },
-        icon: const Icon(Icons.add),
-        label: const Text('Tambah Buku'),
+        tooltip: 'Tambah Buku',
+        child: const Icon(Icons.add),
       ),
     );
   }

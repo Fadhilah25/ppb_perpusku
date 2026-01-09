@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../providers/transaction_provider.dart';
 import '../../providers/book_provider.dart';
 import '../../models/transaction.dart';
+import '../../services/notification_service.dart';
 
 class ReturnBookScreen extends StatefulWidget {
   const ReturnBookScreen({super.key});
@@ -48,6 +49,27 @@ class _ReturnBookScreenState extends State<ReturnBookScreen> {
       await context.read<TransactionProvider>().returnBook(
         transactionId: _selectedTransaction!.id!,
         customFine: customFine,
+      );
+
+      // Get transaction details for notification
+      final details = await context
+          .read<TransactionProvider>()
+          .getTransactionWithDetails(_selectedTransaction!.id!);
+
+      final fine =
+          customFine ??
+          _selectedTransaction!.calculateFine(finePerDay: _finePerDay);
+
+      // Send return success notification
+      await NotificationService.instance.showReturnSuccessNotification(
+        details['book_title'] ?? 'Unknown',
+        details['member_name'] ?? 'Unknown',
+        fine,
+      );
+
+      // Cancel reminder notification if exists
+      await NotificationService.instance.cancelNotification(
+        _selectedTransaction!.id!,
       );
 
       // Reload books to update stock

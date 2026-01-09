@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../providers/statistics_provider.dart';
 import '../../providers/transaction_provider.dart';
+import '../../services/export_service.dart';
+import '../../services/notification_service.dart';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
@@ -29,6 +31,38 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       appBar: AppBar(
         title: const Text('Statistik'),
         actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            onSelected: (value) {
+              if (value == 'export') {
+                _showExportDialog(context);
+              } else if (value == 'check_overdue') {
+                _checkOverdueBooks(context);
+              }
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'export',
+                child: Row(
+                  children: [
+                    Icon(Icons.download),
+                    SizedBox(width: 8),
+                    Text('Export Laporan'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'check_overdue',
+                child: Row(
+                  children: [
+                    Icon(Icons.warning),
+                    SizedBox(width: 8),
+                    Text('Cek Buku Terlambat'),
+                  ],
+                ),
+              ),
+            ],
+          ),
           IconButton(icon: const Icon(Icons.refresh), onPressed: _loadData),
         ],
       ),
@@ -391,5 +425,151 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _showExportDialog(BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Export Laporan'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.book),
+              title: const Text('Export Semua Buku'),
+              onTap: () async {
+                Navigator.pop(context);
+                await _exportData('books');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.people),
+              title: const Text('Export Semua Member'),
+              onTap: () async {
+                Navigator.pop(context);
+                await _exportData('members');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.swap_horiz),
+              title: const Text('Export Transaksi'),
+              onTap: () async {
+                Navigator.pop(context);
+                await _exportData('transactions');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.warning),
+              title: const Text('Export Buku Terlambat'),
+              onTap: () async {
+                Navigator.pop(context);
+                await _exportData('overdue');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.trending_up),
+              title: const Text('Export Buku Populer'),
+              onTap: () async {
+                Navigator.pop(context);
+                await _exportData('popular');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.description),
+              title: const Text('Export Laporan Lengkap'),
+              onTap: () async {
+                Navigator.pop(context);
+                await _exportData('comprehensive');
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _exportData(String type) async {
+    try {
+      String filePath;
+
+      switch (type) {
+        case 'books':
+          filePath = await ExportService.instance.exportBooks();
+          break;
+        case 'members':
+          filePath = await ExportService.instance.exportMembers();
+          break;
+        case 'transactions':
+          filePath = await ExportService.instance.exportTransactions();
+          break;
+        case 'overdue':
+          filePath = await ExportService.instance.exportOverdueReport();
+          break;
+        case 'popular':
+          filePath = await ExportService.instance.exportPopularBooksReport();
+          break;
+        case 'comprehensive':
+          filePath = await ExportService.instance.exportComprehensiveReport();
+          break;
+        default:
+          throw Exception('Unknown export type');
+      }
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('File berhasil di-export:\n$filePath'),
+            duration: const Duration(seconds: 5),
+            action: SnackBarAction(label: 'OK', onPressed: () {}),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error saat export: $e')));
+      }
+    }
+  }
+
+  Future<void> _checkOverdueBooks(BuildContext context) async {
+    final overdueTransactions = await context
+        .read<StatisticsProvider>()
+        .getOverdueTransactions();
+
+    if (overdueTransactions.isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Tidak ada buku terlambat')),
+        );
+      }
+      return;
+    }
+
+    // Send notifications for all overdue books
+    for (final transaction in overdueTransactions) {
+      final details = await context
+          .read<TransactionProvider>()
+          .getTransactionWithDetails(transaction.id!);
+
+      await NotificationService.instance.showOverdueNotification(
+        transaction,
+        details['book_title'] ?? 'Unknown',
+        details['member_name'] ?? 'Unknown',
+      );
+    }
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Ditemukan ${overdueTransactions.length} buku terlambat. '
+            'Notifikasi telah dikirim.',
+          ),
+        ),
+      );
+    }
   }
 }

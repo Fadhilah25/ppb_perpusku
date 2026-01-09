@@ -25,7 +25,7 @@ class TransactionProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> borrowBook({
+  Future<BorrowTransaction> borrowBook({
     required int bookId,
     required int memberId,
     required int borrowDays,
@@ -46,7 +46,9 @@ class TransactionProvider extends ChangeNotifier {
       notes: notes,
     );
 
-    await DatabaseHelper.instance.createTransaction(transaction);
+    final createdTransaction = await DatabaseHelper.instance.createTransaction(
+      transaction,
+    );
 
     // Update book stock
     final book = await DatabaseHelper.instance.readBook(bookId);
@@ -60,6 +62,8 @@ class TransactionProvider extends ChangeNotifier {
 
     _isLoading = false;
     notifyListeners();
+
+    return createdTransaction;
   }
 
   Future<void> returnBook({

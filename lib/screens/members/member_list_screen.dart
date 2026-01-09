@@ -34,7 +34,7 @@ class MemberListScreen extends StatelessWidget {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
             context,
@@ -43,8 +43,8 @@ class MemberListScreen extends StatelessWidget {
             ),
           );
         },
-        icon: const Icon(Icons.person_add),
-        label: const Text('Tambah Anggota'),
+        tooltip: 'Tambah Anggota',
+        child: const Icon(Icons.person_add),
       ),
     );
   }

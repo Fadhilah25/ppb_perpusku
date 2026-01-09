@@ -60,7 +60,8 @@ dependencies:
   csv: ^5.1.1
 
   # Local Notifications
-  flutter_local_notifications: ^16.3.0
+  flutter_local_notifications: ^17.2.3
+  timezone: ^0.9.2
 
   # UI Components
   google_fonts: ^6.1.0

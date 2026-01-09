@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/book.dart';
 import '../../providers/book_provider.dart';
+import '../../services/qr_scanner_service.dart';
 import 'add_edit_book_screen.dart';
 
 class BookDetailScreen extends StatelessWidget {
@@ -15,6 +16,10 @@ class BookDetailScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Detail Buku'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.qr_code),
+            onPressed: () => _showQRCode(context),
+          ),
           IconButton(
             icon: const Icon(Icons.edit),
             onPressed: () {
@@ -149,6 +154,42 @@ class BookDetailScreen extends StatelessWidget {
               }
             },
             child: const Text('Hapus', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showQRCode(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('QR Code Buku'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              color: Colors.white,
+              child: QRScannerService.generateQRCode(
+                book.id.toString(),
+                size: 250,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              book.title,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text('ID: ${book.id}', style: TextStyle(color: Colors.grey[600])),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Tutup'),
           ),
         ],
       ),
