@@ -1,530 +1,514 @@
-# 📚 PerpusKu - Mini Library Management System
+# PerpusKu - Mini Library Management System
 
-Aplikasi perpustakaan sederhana untuk sekolah/komunitas berbasis Flutter dengan fitur lengkap!
+![Flutter](https://img.shields.io/badge/Flutter-3.x-blue)
+![Dart](https://img.shields.io/badge/Dart-3.x-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-![Flutter](https://img.shields.io/badge/Flutter-3.9.2-blue)
-![Dart](https://img.shields.io/badge/Dart-3.0+-orange)
-![Status](https://img.shields.io/badge/Status-Production%20Ready-green)
+## Deskripsi
 
----
+PerpusKu adalah aplikasi manajemen perpustakaan mini yang dirancang untuk sekolah atau komunitas kecil. Aplikasi ini membantu dalam pengelolaan koleksi buku, anggota perpustakaan, dan transaksi peminjaman dengan antarmuka yang sederhana dan intuitif.
 
-## ✨ Fitur Utama
+## Fitur Utama
 
-### 📖 Module 1: Book Catalog
+### Module 1: Book Catalog (Katalog Buku)
 
-- ✅ CRUD buku lengkap (Create, Read, Update, Delete)
-- ✅ Upload foto cover buku dari kamera/galeri
-- ✅ Detail buku (judul, pengarang, kategori, ISBN, deskripsi)
-- ✅ Search & filter buku berdasarkan kategori
-- ✅ Status ketersediaan buku (tersedia/dipinjam)
-- ✅ **BONUS: QR Code Generator** untuk setiap buku
+- CRUD (Create, Read, Update, Delete) data buku
+- Upload foto cover buku menggunakan kamera atau galeri
+- Detail buku lengkap (judul, pengarang, kategori, ISBN, stok)
+- Pencarian dan filter buku berdasarkan kategori
+- Status ketersediaan buku otomatis
 
-### 👥 Module 2: Borrowing System
+### Module 2: Borrowing System (Sistem Peminjaman)
 
-- ✅ Registrasi member dengan foto
-- ✅ Transaksi peminjaman buku
-- ✅ Transaksi pengembalian dengan kalkulator denda otomatis
-- ✅ History peminjaman per member
-- ✅ Perhitungan tanggal jatuh tempo
-- ✅ **BONUS: QR Scanner** untuk memilih buku
-- ✅ **BONUS: Notifikasi** peminjaman & pengembalian
+- Registrasi anggota dengan foto
+- Transaksi peminjaman buku
+- Pengembalian buku dengan perhitungan denda otomatis
+- Riwayat peminjaman per anggota
+- Denda Rp 1.000 per hari keterlambatan
+- QR/Barcode Scanner untuk ISBN buku
+- Push Notifications untuk reminder pengembalian
 
-### 📊 Module 3: Statistics & Reports
+### Module 3: Statistics & Reports (Statistik & Laporan)
 
-- ✅ Chart buku populer (top 10 most borrowed)
-- ✅ Visualisasi frekuensi peminjaman bulanan
-- ✅ List buku terlambat dengan reminder
-- ✅ Summary transaksi bulanan
-- ✅ Total denda terkumpul
-- ✅ **BONUS: Export ke CSV** (berbagai jenis laporan)
+- Dashboard ringkasan (total buku, anggota, transaksi)
+- Grafik buku populer dengan visualisasi bar chart
+- Daftar buku terlambat
+- Ringkasan transaksi bulanan
+- Export data ke CSV dan PDF
+- REST API Integration ready
 
----
+## Screenshots
 
-## 🎁 Fitur Bonus
+### 1. Statistics Dashboard
 
-### 1. 📱 QR/Barcode Scanner
+![Statistics Dashboard](screenshots/01_statistics_dashboard.jpg)
+_Dashboard statistik dengan grafik buku populer dan ringkasan data perpustakaan_
 
-- Scan QR Code untuk memilih buku saat peminjaman
-- Generate QR Code untuk setiap buku
-- UI scanner profesional dengan overlay guide
-- Toggle flash dan switch camera
+### 2. Transaction List
 
-**Cara Pakai:**
+![Transaction List](screenshots/02_trasaction_list.jpg)
+_Daftar transaksi peminjaman dengan status, denda, dan fitur export CSV/PDF_
 
-- Detail Buku → Icon QR → Screenshot
-- Pinjam Buku → Tombol "Scan" → Scan QR
+### 3. Member Detail
 
-### 2. 🔔 Push Notifications
+![Member Detail](screenshots/03_member_detail.jpg)
+_Detail informasi anggota dengan foto dan riwayat peminjaman_
 
-- Notifikasi saat berhasil meminjam buku
-- Notifikasi saat berhasil mengembalikan buku
-- Reminder otomatis 1 hari sebelum jatuh tempo
-- Notifikasi untuk buku yang terlambat
-- Daily check otomatis jam 9 pagi
+### 4. Member List
 
-**Jenis Notifikasi:**
+![Member List](screenshots/04_member_list.jpg)
+_Daftar anggota perpustakaan dengan fitur pencarian dan foto profil_
 
-- ✅ Borrow Success
-- ✅ Return Success
-- ✅ Return Reminder (scheduled)
-- ✅ Overdue Alert
-- ✅ Daily Check
+### 5. Home Screen
 
-### 3. 📊 Export Data (CSV)
+![Home Screen](screenshots/05_home_screen.jpg)
+_Dashboard utama dengan navigasi bottom bar dan ringkasan statistik_
 
-- Export semua buku
-- Export semua member
-- Export transaksi (dengan filter)
-- Export buku terlambat
-- Export buku populer
-- Export laporan bulanan
-- Export laporan komprehensif
+### 6. Book Detail
 
-**Lokasi Export:**
+![Book Detail](screenshots/06_detail_book.jpg)
+_Detail informasi buku lengkap dengan cover, stok, dan status ketersediaan_
 
-- Android: `/storage/Documents/`
-- Desktop: `~/Documents/`
+## Tech Stack
 
-File format: `{type}_{timestamp}.csv`
+- **Framework**: Flutter 3.x
+- **Language**: Dart 3.x
+- **State Management**: Provider
+- **Local Database**: SQLite (sqflite)
+- **Image Handling**: image_picker
+- **Charts**: fl_chart
+- **Date Formatting**: intl
+- **Storage**: path_provider
+- **QR/Barcode Scanner**: mobile_scanner
+- **Push Notifications**: flutter_local_notifications
+- **Export**: csv, pdf, printing
+- **REST API**: http
+- **Permissions**: permission_handler
 
----
-
-## 🗄️ Database Schema
+## Database Schema
 
 ### Books Table
 
 ```sql
-- id: INTEGER PRIMARY KEY
-- title: TEXT NOT NULL
-- author: TEXT NOT NULL
-- isbn: TEXT
-- category: TEXT NOT NULL
-- stock: INTEGER NOT NULL
-- cover_photo: TEXT
-- description: TEXT
-- created_at: TEXT
+CREATE TABLE books (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  author TEXT NOT NULL,
+  isbn TEXT NOT NULL UNIQUE,
+  category TEXT NOT NULL,
+  stock INTEGER NOT NULL DEFAULT 0,
+  cover_photo TEXT,
+  created_at TEXT NOT NULL
+)
 ```
 
 ### Members Table
 
 ```sql
-- id: INTEGER PRIMARY KEY
-- name: TEXT NOT NULL
-- member_id: TEXT UNIQUE NOT NULL
-- phone: TEXT
-- photo: TEXT
-- email: TEXT
-- created_at: TEXT
+CREATE TABLE members (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  member_id TEXT NOT NULL UNIQUE,
+  phone TEXT NOT NULL,
+  photo TEXT,
+  registration_date TEXT NOT NULL
+)
 ```
 
 ### Transactions Table
 
 ```sql
-- id: INTEGER PRIMARY KEY
-- book_id: INTEGER NOT NULL (FK)
-- member_id: INTEGER NOT NULL (FK)
-- borrow_date: TEXT NOT NULL
-- due_date: TEXT NOT NULL
-- return_date: TEXT
-- fine: REAL DEFAULT 0
-- status: TEXT NOT NULL (borrowed/returned)
-- notes: TEXT
+CREATE TABLE transactions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  book_id INTEGER NOT NULL,
+  member_id INTEGER NOT NULL,
+  borrow_date TEXT NOT NULL,
+  due_date TEXT NOT NULL,
+  return_date TEXT,
+  fine REAL NOT NULL DEFAULT 0,
+  status TEXT NOT NULL,
+  FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE CASCADE,
+  FOREIGN KEY (member_id) REFERENCES members (id) ON DELETE CASCADE
+)
 ```
 
----
-
-## 🛠️ Tech Stack
-
-### Framework & Language
-
-- **Flutter**: ^3.9.2
-- **Dart**: ^3.9.2
-
-### State Management
-
-- **Provider**: ^6.1.1
-
-### Database
-
-- **SQLite**: sqflite ^2.3.0
-- **Path Provider**: ^2.1.1
-
-### Media & Image
-
-- **Image Picker**: ^1.0.5 (Camera & Gallery)
-
-### Charts & Visualization
-
-- **FL Chart**: ^0.65.0
-
-### QR/Barcode (Bonus)
-
-- **QR Flutter**: ^4.1.0 (Generate QR)
-- **Mobile Scanner**: ^3.5.5 (Scan QR)
-
-### Notifications (Bonus)
-
-- **Flutter Local Notifications**: ^16.3.0
-- **Timezone**: ^0.9.2
-
-### Export (Bonus)
-
-- **CSV**: ^5.1.1
-
-### UI/UX
-
-- **Google Fonts**: ^6.1.0
-- **Material 3**: ✅ Enabled
-- **Intl**: ^0.19.0 (Date formatting)
-
----
-
-## 🚀 Instalasi & Setup
+## Cara Menjalankan Aplikasi
 
 ### Prerequisites
 
-- Flutter SDK >= 3.9.2
-- Dart SDK >= 3.0
-- Android Studio / VS Code
-- Android SDK (untuk Android)
-- Xcode (untuk iOS)
+- Flutter SDK (versi 3.0 atau lebih baru)
+- Android Studio / VS Code dengan Flutter extension
+- Android device atau emulator
 
-### 1. Clone Repository
+### Installation Steps
+
+1. **Clone repository**
 
 ```bash
-git clone https://github.com/username/perpusku.git
+git clone <repository-url>
 cd perpusku
 ```
 
-### 2. Install Dependencies
+2. **Install dependencies**
 
 ```bash
 flutter pub get
 ```
 
-### 3. Setup Permissions
-
-#### Android
-
-File: `android/app/src/main/AndroidManifest.xml` (sudah dikonfigurasi)
-
-```xml
-<!-- Camera untuk QR Scanner -->
-<uses-permission android:name="android.permission.CAMERA" />
-
-<!-- Notifications -->
-<uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
-<uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
-
-<!-- Storage untuk Export -->
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-```
-
-#### iOS
-
-File: `ios/Runner/Info.plist`
-
-```xml
-<key>NSCameraUsageDescription</key>
-<string>Aplikasi memerlukan akses kamera untuk scan QR Code buku</string>
-<key>NSPhotoLibraryUsageDescription</key>
-<string>Aplikasi memerlukan akses foto untuk menyimpan cover buku</string>
-```
-
-### 4. Run App
+3. **Jalankan aplikasi**
 
 ```bash
-# Debug mode
 flutter run
-
-# Release mode
-flutter run --release
-
-# Specific device
-flutter run -d <device-id>
 ```
 
----
+### Build APK untuk Testing
 
-## 📱 Platform Support
+```bash
+# Build APK debug
+flutter build apk --debug
 
-| Platform | Status             | Notes                    |
-| -------- | ------------------ | ------------------------ |
-| Android  | ✅ Fully Supported | Min SDK 21 (Android 5.0) |
-| iOS      | ✅ Supported       | Min iOS 11.0             |
-| Web      | ⚠️ Limited         | QR Scanner tidak support |
-| Windows  | ✅ Supported       | Desktop mode             |
-| macOS    | ✅ Supported       | Desktop mode             |
-| Linux    | ✅ Supported       | Desktop mode             |
+# Build APK release
+flutter build apk --release
+```
 
-**Catatan:** QR Scanner hanya berfungsi di physical device (Android/iOS), tidak di emulator atau web.
+APK hasil build akan tersimpan di: `build/app/outputs/flutter-apk/`
 
----
+### Download APK untuk Testing
 
-## 📂 Struktur Project
+**Release APK (Recommended)**
+
+- File: `app-release.apk`
+- Size: 64.6 MB
+- Path: `build/app/outputs/flutter-apk/app-release.apk`
+- Status: Ready for testing and submission
+- Download: [Link akan ditambahkan setelah upload ke hosting/release]
+
+**Debug APK**
+
+- File: `app-debug.apk`
+- Path: `build/app/outputs/flutter-apk/app-debug.apk`
+- Status: For development testing only
+
+> **Installation**: Download APK, enable "Install from Unknown Sources" di Android device, kemudian install file APK.
+
+### Build AAB untuk Play Store
+
+```bash
+flutter build appbundle --release
+```
+
+AAB hasil build akan tersimpan di: `build/app/outputs/bundle/release/`
+
+## Struktur Proyek
 
 ```
-perpusku/
-├── lib/
-│   ├── main.dart
+lib/
+├── core/
+│   ├── constants/
+│   │   ├── app_colors.dart
+│   │   └── app_strings.dart
 │   ├── database/
 │   │   └── database_helper.dart
-│   ├── models/
-│   │   ├── book.dart
-│   │   ├── member.dart
-│   │   └── transaction.dart
-│   ├── providers/
-│   │   ├── book_provider.dart
-│   │   ├── member_provider.dart
-│   │   ├── transaction_provider.dart
-│   │   └── statistics_provider.dart
-│   ├── screens/
-│   │   ├── home_screen.dart
-│   │   ├── books/
+│   ├── services/
+│   │   ├── api_service.dart
+│   │   ├── notification_service.dart  # Push notifications
+│   │   ├── scanner_service.dart      # QR/Barcode scanner
+│   │   └── export_service.dart       # CSV & PDF export
+│   ├── theme/
+│   │   └── app_theme.dart
+│   └── widgets/
+│       ├── empty_state.dart
+│       └── loading_overlay.dart
+├── features/
+│   ├── books/
+│   │   ├── models/
+│   │   │   └── book.dart
+│   │   ├── providers/
+│   │   │   └── book_provider.dart
+│   │   ├── screens/
 │   │   │   ├── book_list_screen.dart
 │   │   │   ├── book_detail_screen.dart
-│   │   │   └── add_edit_book_screen.dart
-│   │   ├── members/
+│   │   │   └── book_form_screen.dart
+│   │   └── widgets/
+│   │       └── book_card.dart
+│   ├── members/
+│   │   ├── models/
+│   │   │   └── member.dart
+│   │   ├── providers/
+│   │   │   └── member_provider.dart
+│   │   ├── screens/
 │   │   │   ├── member_list_screen.dart
 │   │   │   ├── member_detail_screen.dart
-│   │   │   └── add_edit_member_screen.dart
-│   │   ├── transactions/
+│   │   │   └── member_form_screen.dart
+│   │   └── widgets/
+│   │       └── member_card.dart
+│   ├── transactions/
+│   │   ├── models/
+│   │   │   └── transaction.dart
+│   │   ├── providers/
+│   │   │   └── transaction_provider.dart
+│   │   ├── screens/
 │   │   │   ├── transaction_list_screen.dart
-│   │   │   ├── borrow_book_screen.dart
-│   │   │   └── return_book_screen.dart
-│   │   └── statistics/
-│   │       └── statistics_screen.dart
-│   ├── services/ (BONUS)
-│   │   ├── qr_scanner_service.dart
-│   │   ├── notification_service.dart
-│   │   └── export_service.dart
-│   ├── utils/
-│   │   ├── constants.dart
-│   │   ├── helpers.dart
-│   │   └── seed_data.dart
-│   └── widgets/
-│       └── common_widgets.dart
-├── assets/
-│   └── images/
-├── android/
-├── ios/
-├── web/
-├── pubspec.yaml
-├── README.md
-├── FITUR_BONUS.md
-└── IMPLEMENTASI_SUMMARY.md
+│   │   │   ├── borrow_screen.dart
+│   │   │   └── return_screen.dart
+│   │   └── widgets/
+│   │       └── transaction_card.dart
+│   └── statistics/
+│       └── screens/
+│           └── statistics_screen.dart
+├── screens/
+│   └── home_screen.dart
+└── main.dart
 ```
 
----
+## Fitur Unggulan
 
-## 🎯 Cara Penggunaan
+### Offline-First Architecture
 
-### 1. Manajemen Buku
+- Semua data disimpan secara lokal menggunakan SQLite
+- Aplikasi berfungsi penuh tanpa koneksi internet
+- Data persisten dan aman
 
-1. Buka tab "Katalog"
-2. Klik tombol "+" untuk tambah buku baru
-3. Isi detail buku (foto, judul, pengarang, kategori, ISBN, stok)
-4. Klik "Simpan"
-5. Untuk melihat QR Code: Buka detail buku → Icon QR
+### QR/Barcode Scanner
 
-### 2. Manajemen Member
+- Scan ISBN buku dengan kamera untuk input cepat
+- Mendukung berbagai format barcode (EAN-13, UPC, Code-128, dll)
+- Toggle flash dan switch camera
 
-1. Buka tab "Anggota"
-2. Klik tombol "+" untuk tambah member
-3. Isi data member (foto, nama, ID member, telepon)
-4. Klik "Simpan"
+### Push Notifications
 
-### 3. Peminjaman Buku
+- Reminder otomatis 1 hari sebelum jatuh tempo
+- Notifikasi harian untuk buku yang terlambat
+- Scheduled notifications dengan timezone support
 
-1. Buka tab "Transaksi"
-2. Klik "Pinjam Buku"
-3. Pilih buku (manual atau scan QR)
-4. Pilih member
-5. Atur durasi peminjaman
-6. Klik "Pinjam Buku"
-7. Notifikasi otomatis terkirim
+### Export Data
 
-### 4. Pengembalian Buku
+- Export transaksi ke CSV untuk analisis di Excel
+- Generate PDF report profesional dengan formatting
+- Share atau print PDF langsung dari aplikasi
+- Export daftar buku dan anggota
 
-1. Buka tab "Transaksi"
-2. Klik "Kembalikan Buku"
-3. Pilih transaksi yang akan dikembalikan
-4. Sistem otomatis hitung denda (jika ada)
-5. Klik "Kembalikan Buku"
-6. Notifikasi otomatis terkirim
+### REST API Ready
 
-### 5. Statistik & Export
+- Service layer lengkap untuk integrasi backend
+- CRUD operations untuk semua entitas
+- Sync data to/from server
+- Connection health check
 
-1. Buka tab "Statistik"
-2. Lihat chart dan summary
-3. Untuk export: Menu (⋮) → "Export Laporan"
-4. Pilih jenis laporan
-5. File tersimpan di Documents folder
+### User-Friendly Interface
 
----
+- Material Design 3 dengan tema modern
+- Navigasi intuitif dengan bottom navigation bar
+- Responsive layout untuk berbagai ukuran layar
 
-## 📊 Screenshots
+### Automatic Calculations
 
-### Home & Book Catalog
+- Perhitungan denda otomatis berdasarkan keterlambatan
+- Update stok buku otomatis saat peminjaman/pengembalian
+- Status transaksi otomatis (borrowed/overdue/returned)
 
-- Bottom Navigation dengan 4 tabs
-- Book list dengan cover images
-- Search & filter functionality
-- Book details dengan QR Code
+### Data Visualization
 
-### Transactions
+- Grafik bar interaktif untuk buku populer
+- Dashboard statistik real-time
+- Indikator visual untuk status ketersediaan
 
-- Borrow book dengan QR Scanner
-- Return book dengan fine calculator
-- Transaction history
+## Permissions
 
-### Statistics
+Aplikasi memerlukan permission berikut:
 
-- Monthly chart
-- Popular books
-- Overdue list
-- Export menu
+- **CAMERA**: Untuk mengambil foto cover buku, foto anggota, dan scan barcode/QR
+- **READ_MEDIA_IMAGES**: Untuk memilih gambar dari galeri (Android 13+)
+- **READ_EXTERNAL_STORAGE**: Untuk akses galeri (Android 12 ke bawah)
+- **WRITE_EXTERNAL_STORAGE**: Untuk menyimpan foto (Android 12 ke bawah)
+- **INTERNET**: Untuk REST API communication (optional)
+- **POST_NOTIFICATIONS**: Untuk push notifications (Android 13+)
+- **SCHEDULE_EXACT_ALARM**: Untuk scheduled reminders
 
----
+## API Documentation
 
-## 🧪 Testing
+### BookProvider
 
-### Unit Tests
+```dart
+// Load all books
+await bookProvider.loadBooks();
 
-```bash
-flutter test
+// Add new book
+await bookProvider.addBook(book);
+
+// Update book
+await bookProvider.updateBook(book);
+
+// Delete book
+await bookProvider.deleteBook(bookId);
+
+// Search books
+bookProvider.setSearchQuery("flutter");
+
+// Filter by category
+bookProvider.setCategory("Teknologi");
 ```
 
-### Integration Tests
+### MemberProvider
 
-```bash
-flutter test integration_test
+```dart
+// Load all members
+await memberProvider.loadMembers();
+
+// Add new member
+await memberProvider.addMember(member);
+
+// Update member
+await memberProvider.updateMember(member);
+
+// Delete member
+await memberProvider.deleteMember(memberId);
+
+// Search members
+memberProvider.setSearchQuery("John");
 ```
 
-### Manual Testing Checklist
+### TransactionProvider
 
-- [ ] CRUD buku
-- [ ] CRUD member
-- [ ] Peminjaman buku
-- [ ] Pengembalian buku
-- [ ] Kalkulasi denda
-- [ ] Search & filter
-- [ ] QR Scanner
-- [ ] QR Generator
-- [ ] Notifications
-- [ ] Export CSV
+```dart
+// Load all transactions
+await transactionProvider.loadTransactions();
 
----
+// Borrow book (with automatic notification scheduling)
+await transactionProvider.borrowBook(bookId, memberId, durationDays);
 
-## 🐛 Troubleshooting
+// Return book (with fine calculation)
+await transactionProvider.returnBook(transactionId);
 
-### QR Scanner tidak berfungsi
+// Get transactions by member
+final transactions = await transactionProvider.getTransactionsByMember(memberId);
 
-- Pastikan testing di real device (bukan emulator)
-- Check camera permission di settings
-- Verify AndroidManifest.xml
-
-### Notifikasi tidak muncul
-
-- Android 13+: Request runtime permission
-- Check notification settings di device
-- Disable battery optimization untuk app
-
-### Export gagal
-
-- Check storage permission
-- Verify path_provider installation
-- Pastikan ada space storage cukup
-
-### Build error
-
-```bash
-flutter clean
-flutter pub get
-flutter run
+// Get overdue transactions
+final overdueList = transactionProvider.overdueTransactions;
 ```
 
+### API Service
+
+```dart
+// Set API base URL in lib/core/services/api_service.dart
+static const String baseUrl = 'https://your-api-server.com/api';
+
+// Set auth token
+ApiService().setAuthToken('your-jwt-token');
+
+// Fetch books from server
+final books = await ApiService().getBooks();
+
+// Create book on server
+final newBook = await ApiService().createBook(book);
+
+// Sync local data to server
+await ApiService().syncToServer(
+  books: localBooks,
+  members: localMembers,
+  transactions: localTransactions,
+);
+
+// Check server connection
+final isOnline = await ApiService().checkConnection();
+```
+
+### Notification Service
+
+```dart
+// Initialize notifications (called in main.dart)
+await NotificationService().initialize();
+
+// Schedule daily overdue check (9 AM)
+await NotificationService().scheduleDailyOverdueCheck();
+
+// Schedule return reminder (1 day before due)
+await NotificationService().scheduleReturnReminder(
+  transactionId,
+  bookTitle,
+  dueDate,
+);
+
+// Check and notify overdue books now
+await NotificationService().checkAndNotifyOverdueBooks();
+
+// Cancel notification
+await NotificationService().cancelNotification(notificationId);
+```
+
+### Scanner Service
+
+```dart
+// Scan barcode/QR code
+final result = await ScannerService.scanBarcode(context);
+if (result != null) {
+  isbnController.text = result; // Use scanned value
+}
+```
+
+### Export Service
+
+```dart
+// Export transactions to CSV
+final csvFile = await ExportService().exportTransactionsToCSV(transactions);
+// File saved to: /data/user/0/.../files/transactions_20260110_143020.csv
+
+// Export transactions to PDF
+final pdfFile = await ExportService().exportTransactionsToPDF(transactions);
+
+// Share PDF
+await ExportService().sharePDF(pdfFile);
+
+// Print PDF
+await ExportService().printPDF(pdfFile);
+
+// Export books to CSV
+final booksCSV = await ExportService().exportBooksToCSV(books);
+
+// Export members to CSV
+final membersCSV = await ExportService().exportMembersToCSV(members);
+```
+
+// Update member
+await memberProvider.updateMember(member);
+
+// Delete member
+await memberProvider.deleteMember(memberId);
+
+````
+
+### TransactionProvider
+
+```dart
+// Load all transactions
+await transactionProvider.loadTransactions();
+
+// Borrow book (bookId, memberId, durationDays)
+await transactionProvider.borrowBook(1, 2, 7);
+
+// Return book
+await transactionProvider.returnBook(transactionId);
+
+// Get overdue transactions
+final overdueList = transactionProvider.overdueTransactions;
+````
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Developer
+
+Developed for educational purposes.
+
+## Support
+
+Jika mengalami masalah atau memiliki pertanyaan, silakan buka issue di repository ini.
+
 ---
 
-## 📈 Roadmap
-
-### Version 1.1 (Future)
-
-- [ ] Barcode scanner untuk ISBN
-- [ ] Cloud backup (Firebase)
-- [ ] Email notifications
-- [ ] Export to PDF
-- [ ] Multi-language support
-- [ ] Dark mode
-- [ ] Batch operations
-
-### Version 2.0 (Future)
-
-- [ ] Online sync
-- [ ] User authentication
-- [ ] Role-based access
-- [ ] Advanced analytics
-- [ ] Mobile & Web dashboard
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 👨‍💻 Developer
-
-**Project by:** [Your Name]
-**Email:** [your.email@example.com]
-**GitHub:** [@yourusername](https://github.com/yourusername)
-
----
-
-## 🙏 Acknowledgments
-
-- Flutter Team untuk framework yang amazing
-- Material Design untuk design guidelines
-- Community plugins yang digunakan
-- Stack Overflow untuk problem solving
-
----
-
-## 📚 Documentation
-
-Untuk dokumentasi lebih lengkap:
-
-- [FITUR_BONUS.md](FITUR_BONUS.md) - Detail fitur bonus
-- [IMPLEMENTASI_SUMMARY.md](IMPLEMENTASI_SUMMARY.md) - Summary implementasi
-
----
-
-## 📞 Support
-
-Jika ada pertanyaan atau issue:
-
-1. Check documentation terlebih dahulu
-2. Open issue di GitHub
-3. Contact developer
-
----
-
-**Made with ❤️ using Flutter**
-
-**Status: ✅ Production Ready**
-**Version: 1.0.0+bonus**
-**Last Updated: December 10, 2025**
+**Note**: Aplikasi ini dibuat untuk keperluan pembelajaran dan dapat dikembangkan lebih lanjut sesuai kebutuhan.
